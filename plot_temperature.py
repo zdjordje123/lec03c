@@ -3,13 +3,15 @@ import csv
 import matplotlib.pyplot as plt
 
 CSV_PATH = "temperature_data.csv"
-SERIES_COLOR = "#2a78d6"
+COLOR_EXACT = "#2a78d6"
+COLOR_RANDOMIZED = "#eb6834"
 
-celsius, fahrenheit = [], []
+celsius, fahrenheit, fahrenheit_randomized = [], [], []
 with open(CSV_PATH, newline="") as f:
     for row in csv.DictReader(f):
         celsius.append(float(row["temperature_celsius"]))
         fahrenheit.append(float(row["temperature_fahrenheit"]))
+        fahrenheit_randomized.append(float(row["temperature_fahrenheit_randomized"]))
 
 order = sorted(range(len(celsius)), key=lambda i: celsius[i])
 celsius_sorted = [celsius[i] for i in order]
@@ -20,18 +22,37 @@ fig, ax = plt.subplots(figsize=(7, 5), dpi=150)
 ax.plot(
     celsius_sorted,
     fahrenheit_sorted,
-    color=SERIES_COLOR,
+    color=COLOR_EXACT,
     linewidth=2,
     zorder=2,
+    label="Exact conversion",
 )
 ax.scatter(
     celsius,
     fahrenheit,
-    color=SERIES_COLOR,
+    color=COLOR_EXACT,
     s=36,
     zorder=3,
     edgecolors="white",
     linewidths=0.5,
+    label="_nolegend_",
+)
+ax.scatter(
+    celsius,
+    fahrenheit_randomized,
+    color=COLOR_RANDOMIZED,
+    s=36,
+    zorder=3,
+    edgecolors="white",
+    linewidths=0.5,
+    label="Randomized (±1 std dev)",
+)
+
+ax.legend(
+    frameon=False,
+    fontsize=9,
+    labelcolor="#52514e",
+    loc="upper left",
 )
 
 ax.set_title("Celsius vs. Fahrenheit", fontsize=13, color="#0b0b0b", pad=12)
